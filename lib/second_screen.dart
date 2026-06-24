@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+/// The destination screen, reached after unlocking on [UnlockScreen].
+///
+/// Combines two things:
+///  1. A standard [Form] with [TextFormField]s for student registration.
+///  2. The original drag pattern from before: a free-form [Draggable]
+///     task card that gets dropped onto a [DragTarget] to finish
+///     onboarding. The drag step only unlocks once the form is valid.
 class SecondScreen extends StatefulWidget {
   const SecondScreen({super.key});
 
@@ -18,8 +25,13 @@ class _SecondScreenState extends State<SecondScreen> {
   bool _isFormSubmitted = false;
   bool _isCompleted = false;
 
-  // the "sticky" chip currently just stays wherever you last left it, anywhere on its card.
-  
+  // Where the "sticky" chip currently sits. Unlike the task card above,
+  // this one isn't dropped onto a target — it just stays wherever you
+  // last left it, anywhere on the board below.
+  Offset _stickyPosition = const Offset(16, 16);
+
+  // Key for the drag "board" — needed so we can convert the drop's
+  // global coordinates into coordinates local to the board itself.
   final _boardKey = GlobalKey();
 
   @override
@@ -159,7 +171,9 @@ class _SecondScreenState extends State<SecondScreen> {
             ),
             const SizedBox(height: 16),
 
-            // The draggable task card. Free movement (not axis-locked),Disabled until the form is submitted.
+            // The draggable task card. Free movement (not axis-locked),
+            // demonstrating the contrast with the constrained drag on
+            // the previous screen. Disabled until the form is submitted.
             if (!_isCompleted)
               Center(
                 child: Opacity(
@@ -275,6 +289,8 @@ class _SecondScreenState extends State<SecondScreen> {
             const SizedBox(height: 16),
 
             // The "board" the sticky chip can be dragged around on.
+            // It needs a fixed height + Stack so we can position the
+            // chip with raw x/y coordinates.
             Container(
               key: _boardKey,
               height: 220,
@@ -295,7 +311,9 @@ class _SecondScreenState extends State<SecondScreen> {
                       feedback: const _StickyChip(),
                       childWhenDragging: const SizedBox.shrink(),
                       onDragEnd: (details) {
-                        // details.offset is in GLOBAL screen coordinates. Convert to the board's local coordinates so the chip lands under the finger instead of jumping.
+                        // details.offset is in GLOBAL screen coordinates.
+                        // Convert to the board's local coordinates so the
+                        // chip lands under the finger instead of jumping.
                         final box =
                             _boardKey.currentContext!.findRenderObject() as RenderBox;
                         final local = box.globalToLocal(details.offset);
@@ -331,7 +349,8 @@ class _SecondScreenState extends State<SecondScreen> {
   }
 }
 
-/// Small label used to title each section of the screen (registration vs. the drag-to-finish step).
+/// Small label used to title each section of the screen
+/// (registration vs. the drag-to-finish step).
 class _SectionLabel extends StatelessWidget {
   const _SectionLabel({required this.icon, required this.text});
 
@@ -357,7 +376,11 @@ class _SectionLabel extends StatelessWidget {
   }
 }
 
-/// The student registration form: name, email, student ID, and course. Kept as its own widget so SecondScreen stays readable. 
+/// The student registration form: name, email, student ID, and course.
+///
+/// Kept as its own widget so [SecondScreen] stays readable. Validation
+/// rules are intentionally simple, this is a demo, not a production
+/// form, but they're enough to show realistic [TextFormField] usage.
 class _RegistrationForm extends StatelessWidget {
   const _RegistrationForm({
     required this.formKey,
@@ -455,7 +478,9 @@ class _RegistrationForm extends StatelessWidget {
   }
 }
 
-/// The chip used in the "drag anywhere and stick" section. 
+/// The chip used in the "drag anywhere and stick" section. Plain and
+/// small on purpose — the point of this widget is the position logic
+/// in [_SecondScreenState], not the visuals.
 class _StickyChip extends StatelessWidget {
   const _StickyChip();
 
