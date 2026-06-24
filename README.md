@@ -34,13 +34,10 @@ This demo simulates several real-world interactions. First, the user performs a 
 
 ## Demo Screenshots
 
-
-```markdown
 ![App Landing Screen](screenshots/slide_to_unlock.png)
-![App Second Srceen](screenshots/second_screen.png)
+![App Second Screen](screenshots/second_screen.png)
 ![App unsticky Drag widget](screenshots/drag_task_card_to_complete_registration.png)
 ![App Sticky Drag widget](screenshots/drag_anywhere_and_stick.png)
-```
 
 ---
 
@@ -55,8 +52,8 @@ This demo simulates several real-world interactions. First, the user performs a 
 ### Installation & Run
 
 ```bash
-git clone <your-repo-url>
-cd <your-repo-folder>
+git clone https://github.com/N-Maurice/Draggable_Widget_Moblive_Dev.git
+cd https://github.com/N-Maurice/Draggable_Widget_Moblive_Dev
 flutter pub get
 flutter run
 ```
